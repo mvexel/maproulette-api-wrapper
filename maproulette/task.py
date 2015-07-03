@@ -4,6 +4,10 @@
 class MapRouletteTask(Object):
 	"""A task for MapRoulette"""
 
+    instruction = None
+    geometries = None
+    status = None
+
 	def __init__(self):
 		pass
 
@@ -22,9 +26,14 @@ class MapRouletteTask(Object):
 
         pass
 
+    def as_payload(self):
+        return {
+            key:value for key, value in self.__dict__.items()
+            if not key.startswith('__') and not callable(key)}
+
 
 class MapRouletteTaskCollection(Object):
-    """A task for MapRoulette"""
+    """A collection of tasks for MapRoulette"""
 
     def __init__(self):
         pass
@@ -42,4 +51,8 @@ class MapRouletteTaskCollection(Object):
     def retrieve(self):
         """Retrieve tasks from the server"""
 
+        pass
+
+
+    def as_payload(self):
         pass

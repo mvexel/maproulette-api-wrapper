@@ -1,51 +1,86 @@
 #!/usr/bin/env python
 
 import requests
+import json
 
 class MapRouletteServer(object):
-    """A MapRoulette server"""
+	"""A MapRoulette server"""
 
-    MAPROULETTE_SERVERS = {
-        'local'     : 'http://localhost:5000/api',
-        'dev'       : 'http://dev.maproulette.org/api',
-        'production': 'http://maproulette.org/api'}
+	SERVERS = {
+		'local'	 : 'http://localhost:5000/api',
+		'dev'	   : 'http://dev.maproulette.org/api',
+		'production': 'http://maproulette.org/api'}
 
-    ENDPOINTS = {
-        'ping'      : '/ping',
-        'challenges': '/challenges',
-        'tasks'     : '/admin/challenge/{}/tasks'
-    }
+	ENDPOINTS = {
+		'ping'	  		 : '/ping',
+		'challenges'	 : '/challenges',
+		'challenge'	 	 : '/challenge/{slug}',
+		'challenge_admin': '/admin/challenge/{slug}',
+		'tasks_admin'	 : '/admin/challenge/{slug}/tasks'
+	}
 
-    base_url = ''
-    active_challenge = None
+	base_url = ''
 
-    def __init__(self, url=MAPROULETTE_SERVERS['local'], challenge=None):
-        self.base_url = url
-        self.active_challenge = challenge
+	def __init__(self, instance='local'):
+		self.base_url = self.SERVERS[instance]
 
-    def alive(self):
-        response = requests.get(self.base_url + self.ENDPOINTS['ping'])
-        if not response.ok:
-            return False
-        return True
 
-    def get_challenges(self):
-        response = requests.get(self.base_url + self.ENDPOINTS['challenges'])
-        if not response.ok:
-            return None
-        return response.json()
+	def __server_message(self, response):
+		r = None
+		try:
+			r = response.json()
+		except ValueError, e:
+			r = {'message': response.text}
+		return dict(
+			status_code=response.status_code,
+			response=r)
 
-    def get_tasks(self):
-        if not self.active_challenge:
-            return None
-        response = requests.get(
-            self.base_url + self.ENDPOINTS['tasks'].format(self.active_challenge))
-        return response.json()
+	def __build_url(self, endpoint, querystring=None, replacements=None):
+		if not endpoint in self.ENDPOINTS:
+			return None
+		url = self.base_url
+		if replacements:
+			url += self.ENDPOINTS[endpoint].format(**replacements)
+		else:
+			url += self.ENDPOINTS[endpoint]
+		if querystring:
+			url += '?{}'.format(querystring)
+		return url
 
-    def submit_tasks(self, task_collection, update=False):
-        """new/updated tasks to the server"""
-        pass
+	def alive(self):
+		response = requests.get(self.base_url + self.ENDPOINTS['ping'])
+		if not response.ok:
+			return False
+		return True
 
-    def submit_challenge(self, challenge, update=False):
-        """new/updated challenge to the server"""
-        pass
+	def challenges(self):
+		response = requests.get(self.base_url + '/challenges')
+		return self.__server_message(response)
+
+	def get(self, endpoint, querystring=None, replacements=None):
+		url = self.__build_url(
+			endpoint,
+			querystring=querystring,
+			replacements=replacements)
+		if not url:
+			return None
+		response = requests.get(url)
+		return self.__server_message(response)
+
+	def post(self, endpoint, payload, replacements=None):
+		url = self.__build_url(
+			endpoint,
+			replacements=replacements)
+		if not url:
+			return None
+		response = requests.post(url, json=payload)
+		return self.__server_message(response)
+
+	def put(self, endpoint, payload, replacements=None):
+		url = self.__build_url(
+			endpoint,
+			replacements=replacements)
+		if not url:
+			return None
+		response = requests.put(url, json=payload)
+		return self.__server_message(response)
