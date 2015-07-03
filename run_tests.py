@@ -4,6 +4,7 @@ import unittest
 import uuid
 from maproulette.server import MapRouletteServer
 from maproulette.challenge import MapRouletteChallenge
+from maproulette.task import MapRouletteTask
 
 class ServerTests(unittest.TestCase):
 
@@ -22,6 +23,7 @@ class ServerTests(unittest.TestCase):
 class ChallengeTests(unittest.TestCase):
 
 	test_challenge_slug = 'test-{}'.format(uuid.uuid4())
+	test_task_identifier = 'task-{}'.format(uuid.uuid4())
 
 	def test_create_challenge(self):
 		server = MapRouletteServer()
@@ -50,6 +52,18 @@ class ChallengeTests(unittest.TestCase):
 		self.assertTrue(
 			response['status_code'] == 200)
 
+
+	def test_create_task(self):
+		server = MapRouletteServer()
+		challenge = MapRouletteChallenge.from_server(
+			server,
+			self.test_challenge_slug)
+		task = MapRouletteTask(
+			challenge,
+			self.test_task_identifier)
+		response = task.create(server)
+		self.assertTrue(
+			response['status_code'] == 201)
 
 if __name__ == '__main__':
 	unittest.main()

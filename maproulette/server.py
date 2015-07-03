@@ -12,11 +12,13 @@ class MapRouletteServer(object):
 		'production': 'http://maproulette.org/api'}
 
 	ENDPOINTS = {
-		'ping'	  		 : '/ping',
-		'challenges'	 : '/challenges',
-		'challenge'	 	 : '/challenge/{slug}',
+		'ping'           : '/ping',
+		'challenges'     : '/challenges',
+		'challenge'      : '/challenge/{slug}',
+		'task'           : '/challenge/{slug}/task/{identifier}',
+		'task_admin'     : '/admin/challenge/{slug}/task/{identifier}',
 		'challenge_admin': '/admin/challenge/{slug}',
-		'tasks_admin'	 : '/admin/challenge/{slug}/tasks'
+		'tasks_admin'    : '/admin/challenge/{slug}/tasks'
 	}
 
 	base_url = ''
@@ -45,6 +47,7 @@ class MapRouletteServer(object):
 			url += self.ENDPOINTS[endpoint]
 		if querystring:
 			url += '?{}'.format(querystring)
+		print url
 		return url
 
 	def alive(self):

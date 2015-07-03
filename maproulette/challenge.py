@@ -51,13 +51,6 @@ class MapRouletteChallenge(object):
 			self.as_payload(),
 			replacements={'slug': self.slug})
 
-	def retrieve(self, server):
-		"""Retrieve challenge from the server"""
-		challenge = server.get(
-			'challenge',
-			replacements={'slug': self.slug})
-		pass
-
 	def as_payload(self):
 		return {
 			key:value for key, value in self.__dict__.items()

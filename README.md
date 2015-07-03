@@ -2,6 +2,10 @@
 
 A python wrapper for the MapRoulette API
 
+## Install
+
+`pip install maproulette`
+
 ## Usage
 
 ### Create a challenge
