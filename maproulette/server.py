@@ -25,16 +25,23 @@ class MapRouletteServer(object):
             return False
         return True
 
-    def challenges(self):
+    def get_challenges(self):
         response = requests.get(self.base_url + self.ENDPOINTS['challenges'])
         if not response.ok:
             return None
         return response.json()
 
-    def tasks(self):
+    def get_tasks(self):
         if not self.active_challenge:
             return None
-        print self.base_url + self.ENDPOINTS['tasks'].format(self.active_challenge)
         response = requests.get(
             self.base_url + self.ENDPOINTS['tasks'].format(self.active_challenge))
         return response.json()
+
+    def submit_tasks(self, task_collection, update=False):
+        """new/updated tasks to the server"""
+        pass
+
+    def submit_challenge(self, challenge, update=False):
+        """new/updated challenge to the server"""
+        pass
