@@ -47,7 +47,6 @@ class MapRouletteServer(object):
 			url += self.ENDPOINTS[endpoint]
 		if querystring:
 			url += '?{}'.format(querystring)
-		print url
 		return url
 
 	def alive(self):
