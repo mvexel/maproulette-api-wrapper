@@ -5,7 +5,11 @@ import requests
 class MapRouletteServer(object):
     """A MapRoulette server"""
 
-    MAPROULETTE_PRODUCTION_URL = 'http://maproulette.org/api'
+    MAPROULETTE_SERVERS = {
+        'local'     : 'http://localhost:5000/api',
+        'dev'       : 'http://dev.maproulette.org/api',
+        'production': 'http://maproulette.org/api'}
+
     ENDPOINTS = {
         'ping'      : '/ping',
         'challenges': '/challenges',
@@ -15,7 +19,7 @@ class MapRouletteServer(object):
     base_url = ''
     active_challenge = None
 
-    def __init__(self, url=MAPROULETTE_PRODUCTION_URL, challenge=None):
+    def __init__(self, url=MAPROULETTE_SERVERS['local'], challenge=None):
         self.base_url = url
         self.active_challenge = challenge
 
