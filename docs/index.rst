@@ -8,7 +8,7 @@ MapRoulette API Wrapper
 #######################
 
 .. contents::
-   :maxdepth: 3
+   :depth: 2
 
 ************
 Introduction
