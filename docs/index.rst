@@ -53,12 +53,15 @@ Next, we create a new Challenge on this server::
 Finally, let's prepare a task and add it to the challenge::
 
 	from maproulette import MapRouletteTask
+	from geojson import FeatureCollection, Feature, Point
 	task = MapRouletteTask(
 	    challenge,
 	    identifier='test-task-1',
 	    geometries=FeatureCollection([Feature(
 		    geometry=Point((random(), random())))]))
 	task.create(server))
+
+See how we use :class:`geojson.FeatureCollection`, :class:`geojson.Feature` and :class:`geojson.Point` to generate a GeoJSON geometry on the fly. In real life, you would probably get these from another source. Note that MapRoulette requires the task geometry to be wrapped in a FeatureCollection, even if the geometry is just a single point, like in the example above.
 
 You can also use :class:`MapRouletteTaskCollection` to create multiple tasks at once.
 
