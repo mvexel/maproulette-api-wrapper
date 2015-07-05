@@ -5,12 +5,12 @@ class MapRouletteChallenge(object):
 
 	slug = None
 	title = None
-	active = False
-	blurb = ''
-	help = ''
-	instruction = ''
-	description = ''
-	difficulty = 2
+	active = None
+	blurb = None
+	help = None
+	instruction = None
+	description = None
+	difficulty = None
 	type = None
 
 	def __init__(
@@ -26,16 +26,11 @@ class MapRouletteChallenge(object):
 		type=None):
 		self.slug = slug
 		self.title = title
-		if active:
-			self.active = active
-		if blurb:
-			self.blurb = blurb
-		if help:
-			self.help = help
-		if description:
-			self.description = description
-		if difficulty:
-			self.difficulty = difficulty
+		self.active = active or False
+		self.blurb = blurb or ''
+		self.help = help or ''
+		self.description = description or ''
+		self.difficulty = difficulty or 2
 
 	def create(self, server):
 		"""Create the challenge on the server"""
@@ -51,6 +46,16 @@ class MapRouletteChallenge(object):
 			self.as_payload(),
 			replacements={'slug': self.slug})
 
+	def exists(self, server):
+		"""Check if a challenge exists on the server"""
+		try:
+			response = server.get(
+				'challenge',
+				replacements={'slug': self.slug})
+		except Exception:
+			return False
+		return True
+
 	def as_payload(self):
 		return {
 			key:value for key, value in self.__dict__.items()
@@ -61,7 +66,5 @@ class MapRouletteChallenge(object):
 		challenge = server.get(
 			'challenge',
 			replacements={'slug': slug})
-		if not challenge['status_code'] == 200:
-			return False
 		return cls(
-			**challenge['response'])
+			**challenge)

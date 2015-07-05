@@ -12,34 +12,25 @@ class MapRouletteServer(object):
 		'production': 'http://maproulette.org/api'}
 
 	ENDPOINTS = {
-		'ping'           : '/ping',
-		'challenges'     : '/challenges',
-		'challenge'      : '/challenge/{slug}',
-		'task'           : '/challenge/{slug}/task/{identifier}',
-		'task_admin'     : '/admin/challenge/{slug}/task/{identifier}',
+		'ping'		   : '/ping',
+		'challenges'	 : '/challenges',
+		'challenge'	  : '/challenge/{slug}',
+		'task'		   : '/challenge/{slug}/task/{identifier}',
+		'task_admin'	 : '/admin/challenge/{slug}/task/{identifier}',
 		'challenge_admin': '/admin/challenge/{slug}',
-		'tasks_admin'    : '/admin/challenge/{slug}/tasks'
+		'tasks_admin'	: '/admin/challenge/{slug}/tasks'
 	}
 
 	base_url = ''
 
 	def __init__(self, instance='local'):
 		self.base_url = self.SERVERS[instance]
-
-
-	def __server_message(self, response):
-		r = None
-		try:
-			r = response.json()
-		except ValueError, e:
-			r = {'message': response.text}
-		return dict(
-			status_code=response.status_code,
-			response=r)
+		if not self.alive():
+			raise MapRouletteServerException('server is not alive')
 
 	def __build_url(self, endpoint, querystring=None, replacements=None):
-		if not endpoint in self.ENDPOINTS:
-			return None
+		if endpoint not in self.ENDPOINTS:
+			raise MapRouletteServerException('{} not in endpoints'.format(endpoint))
 		url = self.base_url
 		if replacements:
 			url += self.ENDPOINTS[endpoint].format(**replacements)
@@ -50,39 +41,52 @@ class MapRouletteServer(object):
 		return url
 
 	def alive(self):
-		response = requests.get(self.base_url + self.ENDPOINTS['ping'])
-		if not response.ok:
+		url = self.__build_url('ping')
+		try:
+			response = requests.get(url)
+		except Exception, e:
+			return False
+		if response.status_code != 200:
 			return False
 		return True
 
 	def challenges(self):
-		response = requests.get(self.base_url + '/challenges')
-		return self.__server_message(response)
+		url = self.__build_url('challenges')
+		response = requests.get(url)
+		if response.status_code != 200:
+			raise MapRouletteServerException('server did not return challenges')
+		return response.json()
 
 	def get(self, endpoint, querystring=None, replacements=None):
 		url = self.__build_url(
 			endpoint,
 			querystring=querystring,
 			replacements=replacements)
-		if not url:
-			return None
 		response = requests.get(url)
-		return self.__server_message(response)
+		if response.status_code != 200:
+			raise MapRouletteServerException('server did not return OK from {}'.format(url))
+		return response.json()
 
 	def post(self, endpoint, payload, replacements=None):
 		url = self.__build_url(
 			endpoint,
 			replacements=replacements)
-		if not url:
-			return None
 		response = requests.post(url, json=payload)
-		return self.__server_message(response)
+		if response.status_code != 201:
+			raise MapRouletteServerException('server did not return OK from {}'.format(url))
+		return response.json()
 
 	def put(self, endpoint, payload, replacements=None):
 		url = self.__build_url(
 			endpoint,
 			replacements=replacements)
-		if not url:
-			return None
 		response = requests.put(url, json=payload)
-		return self.__server_message(response)
+		if response.status_code != 200:
+			raise MapRouletteServerException('server did not return OK from {}'.format(url))
+		return response.json()
+
+class MapRouletteServerException(Exception):
+	"""oops, something went wrong while interacting with the server"""
+
+	def __init__(self, message):
+		super(MapRouletteServerException, self).__init__(self, message)
