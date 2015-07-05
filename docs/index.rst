@@ -9,6 +9,7 @@ MapRoulette API Wrapper
 
 .. contents::
    :depth: 2
+   :backlinks: "none"
 
 ************
 Introduction
