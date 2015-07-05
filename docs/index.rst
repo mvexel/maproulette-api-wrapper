@@ -3,8 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to MapRoulette API Wrapper's documentation!
-===================================================
+MapRoulette API Wrapper
+=======================
+
+This project provides a convenient wrapper around the `MapRoulette API`_. You can create and maintain Challenges and Tasks on a local MapRoulette server or on the main MapRoulette `dev`_ and `production`_ servers.
+
+.. _MapRoulette API: https://github.com/osmlab/maproulette/wiki/API-Documentation
+.. _dev: http://dev.maproulette.org/
+.. _production: http://maproulette.org/
+
 
 Contents:
 
