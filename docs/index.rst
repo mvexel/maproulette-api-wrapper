@@ -6,6 +6,11 @@
 Welcome to MapRoulette API Wrapper's documentation!
 ===================================================
 
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
 MapRoulette Server
 ------------------
 
