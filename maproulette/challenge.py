@@ -91,6 +91,8 @@ class MapRouletteChallenge(object):
 
 	@classmethod
 	def from_server(cls, server, slug):
+		"""Retrieve a challenge from the MapRoulette server"""
+
 		challenge = server.get(
 			'challenge',
 			replacements={'slug': slug})
