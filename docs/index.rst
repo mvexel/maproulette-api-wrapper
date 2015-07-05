@@ -7,7 +7,7 @@
 MapRoulette API Wrapper
 #######################
 
-.. toctree::
+.. contents::
    :maxdepth: 3
 
 ************
