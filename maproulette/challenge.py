@@ -1,8 +1,34 @@
 #!/usr/bin/env python
 
-class MapRouletteChallenge(object):
-	"""A challenge for MapRoulette"""
+"""
+Describes the maproulette challenge
+"""
 
+
+class MapRouletteChallenge(object):
+	"""
+	A MapRoulette challenge.
+
+	Typical usage::
+
+		challenge = MapRouletteChallenge(
+			slug=slug,
+			title=title)
+		challenge.create(server_instance)
+
+	:param slug: A valid slug for this challenge
+	:param title: Challenge title
+	:type title: String
+	:param active: Whether the challenge should be active or not
+	:type active: Boolean
+	:param blurb: A sort blurb describing the challenge
+	:param help: Help text for the challenge
+	:param instruction: Challenge-level instruction text
+	:param description: A longer description text for the challenge
+	:param difficulty: Challenge difficulty level (1-3)
+	:rtype: A :class:`MapRouletteChallenge`
+
+	"""
 	slug = None
 	title = None
 	active = None

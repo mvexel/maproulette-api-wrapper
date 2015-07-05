@@ -4,8 +4,24 @@ import json
 from maproulette.challenge import MapRouletteChallenge
 
 class MapRouletteTask(object):
-	"""A task for MapRoulette"""
+	"""
+	A task for MapRoulette
 
+	Typical usage::
+
+		task = MapRouletteTask(
+			challenge=challenge_obj,
+			identifier=identifier,
+			geometries=geometries)
+		task.create(server_instance)
+		
+	:param challenge: An instance of MapRouletteChallenge
+	:param identifer: A valid Task identifer
+	:param geometries: One or more geometries serialized as a GeoJSON FeatureCollection
+	:type geometries: FeatureCollection
+	:param instruction: A task-level instruction
+	:param status: The task's initial status (defaults to 'created' in MapRoulette)
+	"""
 	instruction = None
 	geometries = None
 	status = None
@@ -67,6 +83,7 @@ class MapRouletteTask(object):
 				'identifier': self.__identifier__})
 		return cls(**task)
 
+
 class MapRouletteTaskCollection(object):
 	"""A collection of tasks for MapRoulette"""
 
@@ -84,10 +101,10 @@ class MapRouletteTaskCollection(object):
 		"""Create the tasks on the server"""
 		for chunk in self.__cut_to_size():
 			server.post(
-			  	'tasks_admin',
+				'tasks_admin',
 				chunk.as_payload(),
 				replacements={
-		   			'slug': chunk.__challenge__.slug})
+					'slug': chunk.__challenge__.slug})
 
 	def update(self, server):
 		"""Update existing tasks on the server"""
