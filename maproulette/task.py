@@ -52,6 +52,7 @@ class MapRouletteTask(object):
 		payload = {
 			key:value for key, value in self.__dict__.items()
 			if not key.startswith('__')
+			and not value is None
 			and not callable(key)}
 		if with_identifier:
 			payload['identifier'] = self.__identifier__
