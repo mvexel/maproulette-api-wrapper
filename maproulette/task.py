@@ -52,7 +52,7 @@ class MapRouletteTask(object):
 				'slug': self.__challenge__.slug,
 				'identifier': self.__identifier__})
 
-	def update(self):
+	def update(self, server):
 		"""Update existing task on the server"""
 		return server.put(
 			'task_admin',
