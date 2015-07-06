@@ -61,8 +61,18 @@ class MapRouletteTask(object):
 				'slug': self.__challenge__.slug,
 				'identifier': self.__identifier__})
 
-	def add(self, task):
-		self.tasks.append(task)
+	def exists(self, server):
+		"""Check if a task exists on the server"""
+		try:
+			response = server.get(
+				'task',
+			replacements={
+				'slug': self.__challenge__.slug,
+				'identifier': self.__identifier__})
+		except Exception:
+			return False
+		return True
+
 
 	def as_payload(self, with_identifier=False):
 		payload = {
@@ -76,6 +86,7 @@ class MapRouletteTask(object):
 
 	@classmethod
 	def from_server(cls, server, slug):
+		"""Retrieve a task from the server"""
 		task = server.get(
 			'task',
 			replacements={
@@ -114,6 +125,10 @@ class MapRouletteTaskCollection(object):
 				chunk.as_payload(),
 				replacements={
 					'slug': chunk.__challenge__.slug})
+
+	def add(self, task):
+		"""Add task to the Collection"""
+		self.tasks.append(task)
 
 	def as_payload(self):
 		payload = [

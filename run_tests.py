@@ -58,7 +58,19 @@ class APITests(unittest.TestCase):
 			geometries=self.__random_point())
 		response = task.create(server)
 
-	def test_05_create_a_ton_of_tasks(self):
+	def test_05_task_exists(self):
+		server = MapRouletteServer()
+		challenge = MapRouletteChallenge.from_server(
+			server,
+			self.test_challenge_slug)
+		task = MapRouletteTask(
+			challenge,
+			identifier=self.test_task_identifier,
+			geometries=self.__random_point())
+		self.assertTrue(task.exists(server))
+
+
+	def test_06_create_a_ton_of_tasks(self):
 		server = MapRouletteServer()
 		challenge = MapRouletteChallenge.from_server(
 			server,
