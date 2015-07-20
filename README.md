@@ -8,7 +8,7 @@ A python wrapper for the MapRoulette API
 
 ## Usage
 
-See the documentation: [![badge](https://readthedocs.org/projects/maproulette-api-wrapper/badge/?version=latest)](https://readthedocs.org/projects/maproulette-api-wrapper/?badge=latest)
+See the [documentation](http://maproulette-api-wrapper.readthedocs.org/en/latest/).
 
 ## Tests
 
