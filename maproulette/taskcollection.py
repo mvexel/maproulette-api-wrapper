@@ -48,19 +48,34 @@ class MapRouletteTaskCollection(object):
 		if not self.challenge.exists(server):
 			raise Exception('Challenge does not exist on server')
 		existing = MapRouletteTaskCollection.from_server(server, self.challenge)
+		same = []
+		new = []
+		changed = []
+		deleted = []
 		for task in self.tasks:
-			if task.identifier in [task.identifier for task in existing.tasks]:
-				print 'exists'
+			if task.identifier in [existing_task.identifier for existing_task in existing.tasks]:
+				if task == existing.get_by_identifier(task.identifier):
+					same.append(task)
+				else:
+					changed.append(task)
 			else:
-				print 'new'
+					new.append(task)
 		for task in existing.tasks:
 			if task.identifier not in [task.identifier for task in self.tasks]:
-				print 'delete'
+				deleted.append(task)
+		print '\nsame: {same}\nnew: {new}\nchanged: {changed}\ndeleted: {deleted}'.format(
+			same=len(same),
+			new=len(new),
+			changed=len(changed),
+			deleted=len(deleted))
 
 
 	def add(self, server):
 		"""Add task colleciton to the Collection."""
 		self.tasks.append(task)
+
+	def get_by_identifier(self, identifier):
+		return next((task for task in self.tasks if task.identifier == identifier), None)
 
 	def as_payload(self):
 		payload = [

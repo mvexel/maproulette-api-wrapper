@@ -88,6 +88,10 @@ class MapRouletteTask(object):
 			payload['identifier'] = self.identifier
 		return payload
 
+	def __eq__(self, other):
+		return (isinstance(other, self.__class__)
+			and self.__dict__ == other.__dict__)
+
 	@classmethod
 	def from_server(cls, server, slug):
 		"""Retrieve a task from the server"""

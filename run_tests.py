@@ -99,6 +99,9 @@ class APITests(unittest.TestCase):
 				challenge=challenge,
 				identifier='task-{}'.format(uuid.uuid4()),
 				geometries=self.__random_point()))
+		# and finally change one task so it appears 'updated'
+		task_collection.tasks[0].geometries = self.__random_point()
+		task_collection.tasks[0].status = 'updated'
 		task_collection.reconcile(self.server)
 
 	def __random_point(self):
