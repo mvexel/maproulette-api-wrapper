@@ -1,14 +1,36 @@
 #!/usr/bin/env python
 
 """
-A collection of Tasks
+A collection of tasks for MapRoulette.
+This is not a native MapRoulette object, but rather a convenience object
+to leverage the bulk insert / update calls in the MapRoulette API. The 
+MapRouletteTaskCollection class contains one notable method that is not native
+to the MapRoulette API: :py:func:`.reconcile`, which reconciles a task collection
+with the corresponding challenge on the server.
 """
 
 from .challenge import MapRouletteChallenge
 from .task import MapRouletteTask
 
 class MapRouletteTaskCollection(object):
-	"""A collection of tasks for MapRoulette."""
+	"""
+	Typical usage::
+
+		task = MapRouletteTask(
+			challenge=challenge_obj,
+			identifier=identifier,
+			geometries=geometries)
+		task.create(server_instance)
+
+	:param challenge: An instance of MapRouletteChallenge
+	:param identifer: A valid Task identifer
+	:param geometries: One or more geometries serialized as a GeoJSON FeatureCollection
+	:type geometries: FeatureCollection
+	:param instruction: A task-level instruction
+	:param status: The task's initial status (defaults to 'created' in MapRoulette)
+
+
+	"""
 
 	MAX_TASKS = 5000
 	tasks = None
@@ -47,28 +69,49 @@ class MapRouletteTaskCollection(object):
 		"""
 		if not self.challenge.exists(server):
 			raise Exception('Challenge does not exist on server')
+
 		existing = MapRouletteTaskCollection.from_server(server, self.challenge)
+
 		same = []
 		new = []
 		changed = []
 		deleted = []
+
+		# reconcile the new tasks with the existing tasks:
 		for task in self.tasks:
+			# if the task exists on the server...
 			if task.identifier in [existing_task.identifier for existing_task in existing.tasks]:
+				# and they are equal...
 				if task == existing.get_by_identifier(task.identifier):
+					# add to 'same' list
 					same.append(task)
+					# if they are not equal, add to 'changed' list
 				else:
 					changed.append(task)
+			# if the task does not exist on the server, add to 'new' list
 			else:
 					new.append(task)
+
+		# next, check for tasks on the server that don't exist in the new collection...
 		for task in existing.tasks:
 			if task.identifier not in [task.identifier for task in self.tasks]:
+				# ... and add those to the 'deleted' list.
 				deleted.append(task)
-		print '\nsame: {same}\nnew: {new}\nchanged: {changed}\ndeleted: {deleted}'.format(
-			same=len(same),
-			new=len(new),
-			changed=len(changed),
-			deleted=len(deleted))
 
+		# update the server with new, changed, and deleted tasks
+		if new:
+			newCollection = MapRouletteTaskCollection(self.challenge, tasks=new)
+			newCollection.create(server)
+		if changed:
+			changedCollection = MapRouletteTaskCollection(self.challenge, tasks=changed)
+			changedCollection.update(server)
+		if deleted:
+			deletedCollection = MapRouletteTaskCollection(self.challenge, tasks=deleted)
+			for task in deletedCollection.tasks:
+				task.status = 'deleted'
+			deletedCollection.update(server)
+		# return same, new, changed and deleted tasks
+		return {'same': same, 'new': new, 'changed': changed, 'deleted': deleted}
 
 	def add(self, server):
 		"""Add task colleciton to the Collection."""

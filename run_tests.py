@@ -11,6 +11,7 @@ from random import random
 
 class APITests(unittest.TestCase):
 
+	# how much is A_TON?
 	A_TON = 100
 
 	test_challenge_slug = 'test-{}'.format(uuid.uuid4())
@@ -19,9 +20,15 @@ class APITests(unittest.TestCase):
 	server = MapRouletteServer(url=test_server_url)
 
 	def test_001_init(self):
+		"""
+		Assert that the server is indeed alive.
+		"""
 		self.assertTrue(isinstance(self.server, MapRouletteServer))
 
 	def test_002_challenges(self):
+		"""
+		Assert that the server returns a list of challenges
+		"""
 		challenges = self.server.challenges()
 		self.assertTrue(isinstance(challenges, list))
 
@@ -85,9 +92,19 @@ class APITests(unittest.TestCase):
 		# We already created 1 task in test 006, then A_TON more in test 008
 
 	def test_010_reconcile_task_collections(self):
+		"""
+		In this test case, we will reconcile a task collection with an
+		existing one on the server (created in 008).
+		Compared to the existing task collection, we will remove one task,
+		add one task, and change one task.
+		"""
+
+		# get the challenge from server
 		challenge = MapRouletteChallenge.from_server(
 			self.server,
 			self.test_challenge_slug)
+		# get the task collection to reconcile, start out with the
+		# existing one on the server
 		task_collection = MapRouletteTaskCollection.from_server(
 			self.server,
 			challenge)
@@ -101,14 +118,28 @@ class APITests(unittest.TestCase):
 				geometries=self.__random_point()))
 		# and finally change one task so it appears 'updated'
 		task_collection.tasks[0].geometries = self.__random_point()
-		task_collection.tasks[0].status = 'updated'
-		task_collection.reconcile(self.server)
+		task_collection.tasks[0].status = 'changed'
+
+		# reconcile the two collections
+		result = task_collection.reconcile(self.server)
+
+		# assert that we indeed have one new, one changed and one deleted task.
+		self.assertTrue(len(result['new']) == 1)
+		self.assertTrue(len(result['changed']) == 1)
+		self.assertTrue(len(result['deleted']) == 1)
 
 	def __random_point(self):
+		"""
+		return a random geographic Point, wrapped in a Feature, wrapped in a
+		FeatureCollection. It's like the Turducken of geometries.
+		"""
 		return FeatureCollection([
 			Feature(geometry=Point((random(), random())))])
 
 	def __create_task_collection(self, challenge):
+		"""
+		Return a collection of A_TON of tasks with random Point geometries
+		"""
 		task_collection = MapRouletteTaskCollection(challenge)
 		i = 0
 		while i < self.A_TON:

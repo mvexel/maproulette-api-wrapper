@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-A MapRoulette Server
+A MapRoulette server.
 """
 
 import requests
@@ -9,16 +9,14 @@ import json
 
 class MapRouletteServer(object):
 	"""
-	A MapRoulette server.
-
-		Typical usage::
+	Typical usage::
 
 		server = MapRouletteServer(
 			url='http://dev.maproulette.org/api')
 
 	:param url: The URL for the MapRoulette API server you want to use
 	:type url: String
-	:rtype: A :class:`MapRouletteServer`
+	:rtype: A :py:class:`MapRouletteServer`
 	"""
 
 	ENDPOINTS = {

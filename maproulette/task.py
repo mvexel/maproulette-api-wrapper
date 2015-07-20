@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-MapRoulette Tasks
+A task for MapRoulette.
 """
 
 import json
@@ -9,8 +9,6 @@ from maproulette.challenge import MapRouletteChallenge
 
 class MapRouletteTask(object):
 	"""
-	A task for MapRoulette
-
 	Typical usage::
 
 		task = MapRouletteTask(

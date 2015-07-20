@@ -90,3 +90,9 @@ MapRoulette Task
 
 .. automodule:: maproulette.task
 	:members:
+
+A Task Collection
+=================
+
+.. automodule:: maproulette.taskcollection
+	:members:

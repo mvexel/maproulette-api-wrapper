@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 """
-Describes the maproulette challenge
+A challenge for MapRoulette.
 """
 
 class MapRouletteChallenge(object):
 	"""
-	A MapRoulette challenge.
-
 	Typical usage::
 
 		challenge = MapRouletteChallenge(
