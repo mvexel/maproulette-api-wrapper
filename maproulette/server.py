@@ -1,15 +1,25 @@
 #!/usr/bin/env python
 
+"""
+A MapRoulette Server
+"""
+
 import requests
 import json
 
 class MapRouletteServer(object):
-	"""A MapRoulette server"""
+	"""
+	A MapRoulette server.
 
-	SERVERS = {
-		'local'	 : 'http://localhost:5000/api',
-		'dev'	   : 'http://dev.maproulette.org/api',
-		'production': 'http://maproulette.org/api'}
+		Typical usage::
+
+		server = MapRouletteServer(
+			url='http://dev.maproulette.org/api')
+
+	:param url: The URL for the MapRoulette API server you want to use
+	:type url: String
+	:rtype: A :class:`MapRouletteServer`
+	"""
 
 	ENDPOINTS = {
 		'ping'		   : '/ping',
@@ -23,14 +33,14 @@ class MapRouletteServer(object):
 
 	base_url = ''
 
-	def __init__(self, instance='local'):
-		self.base_url = self.SERVERS[instance]
+	def __init__(self, url):
+		self.base_url = url
 		if not self.alive():
-			raise MapRouletteServerException('server is not alive')
+			raise Exception('server is not alive')
 
 	def __build_url(self, endpoint, querystring=None, replacements=None):
 		if endpoint not in self.ENDPOINTS:
-			raise MapRouletteServerException('{} not in endpoints'.format(endpoint))
+			raise Exception('{} not in endpoints'.format(endpoint))
 		url = self.base_url
 		if replacements:
 			url += self.ENDPOINTS[endpoint].format(**replacements)
@@ -54,7 +64,7 @@ class MapRouletteServer(object):
 		url = self.__build_url('challenges')
 		response = requests.get(url)
 		if response.status_code != 200:
-			raise MapRouletteServerException('server did not return challenges')
+			raise Exception('server did not return challenges')
 		return response.json()
 
 	def get(self, endpoint, querystring=None, replacements=None):
@@ -64,7 +74,7 @@ class MapRouletteServer(object):
 			replacements=replacements)
 		response = requests.get(url)
 		if response.status_code != 200:
-			raise MapRouletteServerException('server did not return OK from {}'.format(url))
+			raise Exception('server did not return OK from {}'.format(url))
 		return response.json()
 
 	def post(self, endpoint, payload, replacements=None):
@@ -73,7 +83,7 @@ class MapRouletteServer(object):
 			replacements=replacements)
 		response = requests.post(url, json=payload)
 		if response.status_code != 201:
-			raise MapRouletteServerException('server did not return OK from {}'.format(url))
+			raise Exception('server did not return OK from {}'.format(url))
 		return response.json()
 
 	def put(self, endpoint, payload, replacements=None):
@@ -82,11 +92,5 @@ class MapRouletteServer(object):
 			replacements=replacements)
 		response = requests.put(url, json=payload)
 		if response.status_code != 200:
-			raise MapRouletteServerException('server did not return OK from {}'.format(url))
+			raise Exception('server did not return OK from {}'.format(url))
 		return response.json()
-
-class MapRouletteServerException(Exception):
-	"""oops, something went wrong while interacting with the server"""
-
-	def __init__(self, message):
-		super(MapRouletteServerException, self).__init__(self, message)

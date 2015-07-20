@@ -4,7 +4,6 @@
 Describes the maproulette challenge
 """
 
-
 class MapRouletteChallenge(object):
 	"""
 	A MapRoulette challenge.

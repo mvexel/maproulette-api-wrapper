@@ -37,10 +37,15 @@ Once you have those things, you can get to work!
 
 First, we get a MapRoulette server instance::
 
-	from maproulette import MapRouletteServer
-	server = MapRouletteServer()
+	>>> from maproulette import MapRouletteServer
+	>>> server = MapRouletteServer('http://localhost:5000/api')
 
-Without any arguments, this will get a :class:`MapRouletteServer` instance that points at a local MapRoulette development server at ``http://localhost:5000``. 
+This will get a :class:`MapRouletteServer` instance that points at a local MapRoulette development server at ``http://localhost:5000``.
+
+Let's see if it is alive::
+
+	>>> server.alive()
+	True
 
 Next, we create a new Challenge on this server::
 

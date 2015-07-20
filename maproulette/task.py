@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+MapRoulette Tasks
+"""
+
 import json
 from maproulette.challenge import MapRouletteChallenge
 
@@ -14,7 +18,7 @@ class MapRouletteTask(object):
 			identifier=identifier,
 			geometries=geometries)
 		task.create(server_instance)
-		
+
 	:param challenge: An instance of MapRouletteChallenge
 	:param identifer: A valid Task identifer
 	:param geometries: One or more geometries serialized as a GeoJSON FeatureCollection
@@ -26,17 +30,17 @@ class MapRouletteTask(object):
 	geometries = None
 	status = None
 	__challenge__ = None
-	__identifier__ = None
+	identifier = None
 
 	def __init__(
 		self,
-		challenge,
 		identifier,
-		geometries,
+		challenge=None,
+		geometries=None,
 		instruction=None,
 		status=None):
 		self.__challenge__ = challenge
-		self.__identifier__ = identifier
+		self.identifier = identifier
 		self.geometries = geometries
 		self.instruction = instruction or ''
 		self.status = status or None
@@ -44,13 +48,13 @@ class MapRouletteTask(object):
 	def create(self, server):
 		"""Create the task on the server"""
 		if len(self.geometries) == 0:
-			raise MapRouletteTaskException('no geometries')
+			raise Exception('no geometries')
 		return server.post(
 			'task_admin',
 			self.as_payload(),
 			replacements={
 				'slug': self.__challenge__.slug,
-				'identifier': self.__identifier__})
+				'identifier': self.identifier})
 
 	def update(self, server):
 		"""Update existing task on the server"""
@@ -59,7 +63,7 @@ class MapRouletteTask(object):
 			self.as_payload(),
 			replacements={
 				'slug': self.__challenge__.slug,
-				'identifier': self.__identifier__})
+				'identifier': self.identifier})
 
 	def exists(self, server):
 		"""Check if a task exists on the server"""
@@ -68,7 +72,7 @@ class MapRouletteTask(object):
 				'task',
 			replacements={
 				'slug': self.__challenge__.slug,
-				'identifier': self.__identifier__})
+				'identifier': self.identifier})
 		except Exception:
 			return False
 		return True
@@ -81,7 +85,7 @@ class MapRouletteTask(object):
 			and not value is None
 			and not callable(key)}
 		if with_identifier:
-			payload['identifier'] = self.__identifier__
+			payload['identifier'] = self.identifier
 		return payload
 
 	@classmethod
@@ -91,61 +95,10 @@ class MapRouletteTask(object):
 			'task',
 			replacements={
 				'slug': self.__challenge__.slug,
-				'identifier': self.__identifier__})
+				'identifier': self.identifier})
 		return cls(**task)
 
-
-class MapRouletteTaskCollection(object):
-	"""A collection of tasks for MapRoulette"""
-
-	MAX_TASKS = 5000
-	tasks = None
-	__challenge__ = None
-
-	def __init__(self, challenge, tasks=None):
-		if not isinstance(challenge, MapRouletteChallenge):
-			raise MapRouletteTaskException('challenge is not a challenge')
-		self.__challenge__ = challenge
-		self.tasks = tasks or []
-
-	def create(self, server):
-		"""Create the tasks on the server"""
-		for chunk in self.__cut_to_size():
-			server.post(
-				'tasks_admin',
-				chunk.as_payload(),
-				replacements={
-					'slug': chunk.__challenge__.slug})
-
-	def update(self, server):
-		"""Update existing tasks on the server"""
-		for chunk in self.__cut_to_size():
-			server.put(
-				'tasks_admin',
-				chunk.as_payload(),
-				replacements={
-					'slug': chunk.__challenge__.slug})
-
-	def add(self, task):
-		"""Add task to the Collection"""
-		self.tasks.append(task)
-
-	def as_payload(self):
-		payload = [
-			task.as_payload(with_identifier=True)
-			for task in self.tasks]
-		return payload
-
-	def __cut_to_size(self):
-		return (
-			MapRouletteTaskCollection(
-				self.__challenge__,
-				tasks=self.tasks[i:i+self.MAX_TASKS])
-			for i in xrange(0, len(self.tasks), self.MAX_TASKS))
-
-
-class MapRouletteTaskException(Exception):
-	"""A task is not kosher"""
-
-	def __init__(self, message):
-		super(MapRouletteTaskException, self).__init__(self, message)
+	@classmethod
+	def from_payload(cls, payload):
+		"""Create a task from JSON"""
+		return cls(**payload)
