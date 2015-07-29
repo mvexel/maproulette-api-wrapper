@@ -12,13 +12,14 @@ class MapRouletteTask(object):
 	Typical usage::
 
 		task = MapRouletteTask(
-			challenge=challenge_obj,
-			identifier=identifier,
-			geometries=geometries)
+			identifier,
+			challenge=challenge,
+			geometries=geometries,
+			instruction=instruction)
 		task.create(server_instance)
 
-	:param challenge: An instance of MapRouletteChallenge
 	:param identifer: A valid Task identifer
+	:param challenge: An instance of MapRouletteChallenge
 	:param geometries: One or more geometries serialized as a GeoJSON FeatureCollection
 	:type geometries: FeatureCollection
 	:param instruction: A task-level instruction
