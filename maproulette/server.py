@@ -4,9 +4,9 @@
 A MapRoulette server.
 """
 
-import requests
-import json
 import re
+
+import requests
 
 
 class MapRouletteServer(object):
@@ -26,13 +26,13 @@ class MapRouletteServer(object):
     """
 
     ENDPOINTS = {
-        'ping'              : '/ping',
-        'challenges'        : '/challenges',
-        'challenge'         : '/challenge/{slug}',
-        'task'              : '/challenge/{slug}/task/{identifier}',
-        'task_admin'        : '/admin/challenge/{slug}/task/{identifier}',
-        'challenge_admin'   : '/admin/challenge/{slug}',
-        'tasks_admin'       : '/admin/challenge/{slug}/tasks'
+        'ping': '/ping',
+        'challenges': '/challenges',
+        'challenge': '/challenge/{slug}',
+        'task': '/challenge/{slug}/task/{identifier}',
+        'task_admin': '/admin/challenge/{slug}/task/{identifier}',
+        'challenge_admin': '/admin/challenge/{slug}',
+        'tasks_admin': '/admin/challenge/{slug}/tasks'
     }
     LOCAL_TEST_SERVER_ENDPOINT = 'http://localhost:5000/api'
 
@@ -129,3 +129,16 @@ class MapRouletteServer(object):
                 expect_status,
                 response.status_code))
         return response.json()
+
+    def delete(self, endpoint, replacements=None):
+        expect_status = 204
+        url = self.__build_url(
+            endpoint,
+            replacements=replacements)
+        response = requests.delete(url, auth=self.__auth_params_for(url))
+        if response.status_code != expect_status:
+            raise Exception('server did not return as expected from {}. (Expected: {}, received: {})'.format(
+                url,
+                expect_status,
+                response.status_code))
+        return True

@@ -72,6 +72,12 @@ class MapRouletteChallenge(object):
             self.as_payload(),
             replacements={'slug': self.slug})
 
+    def delete(self, server):
+        return server.delete(
+            'challenge_admin',
+            replacements={'slug': self.slug}
+        )
+
     def exists(self, server):
         """Check if a challenge exists on the server"""
 

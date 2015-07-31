@@ -2,23 +2,25 @@
 
 import unittest
 import uuid
-from maproulette.server import MapRouletteServer
-from maproulette.challenge import MapRouletteChallenge
-from maproulette.task import MapRouletteTask
-from maproulette.taskcollection import MapRouletteTaskCollection
-from geojson import FeatureCollection, Feature, Point
 from random import random
 import os
 import sys
 
+from geojson import FeatureCollection, Feature, Point
+
+from maproulette.server import MapRouletteServer
+from maproulette.challenge import MapRouletteChallenge
+from maproulette.task import MapRouletteTask
+from maproulette.taskcollection import MapRouletteTaskCollection
+
 
 class APITests(unittest.TestCase):
     # how much is A_TON?
-    A_TON = 100
+    A_TON = 10000
     test_challenge_slug = 'test-{}'.format(uuid.uuid4())
     test_task_identifier = 'task-{}'.format(uuid.uuid4())
-#    test_server_url = 'http://dev.maproulette.org/api'
-    test_server_url = 'http://localhost:5000/api'
+    test_server_url = 'http://dev.maproulette.org/api'
+    #    test_server_url = 'http://localhost:5000/api'
     test_credentials = {
         'user': os.environ.get("MAPROULETTE_API_USER"),
         'password': os.environ.get("MAPROULETTE_API_PASSWORD")}
@@ -136,6 +138,18 @@ class APITests(unittest.TestCase):
         self.assertTrue(len(result['new']) == 1)
         self.assertTrue(len(result['changed']) == 1)
         self.assertTrue(len(result['deleted']) == 1)
+
+    def test_011_delete_challenge(self):
+        """
+        Delete the challenge that was created for this test
+        """
+
+        # get the challenge from server
+        challenge = MapRouletteChallenge.from_server(
+            self.server,
+            self.test_challenge_slug)
+        challenge.delete(self.server)
+
 
     def __random_point(self):
         self.geometries__ = """
