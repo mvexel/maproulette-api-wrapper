@@ -16,11 +16,10 @@ from maproulette.taskcollection import MapRouletteTaskCollection
 
 class APITests(unittest.TestCase):
     # how much is A_TON?
-    A_TON = 10000
+    A_TON = 100
     test_challenge_slug = 'test-{}'.format(uuid.uuid4())
     test_task_identifier = 'task-{}'.format(uuid.uuid4())
-    test_server_url = 'http://dev.maproulette.org/api'
-    #    test_server_url = 'http://localhost:5000/api'
+    test_server_url = os.environ.get("MAPROULETTE_API_SERVER")
     test_credentials = {
         'user': os.environ.get("MAPROULETTE_API_USER"),
         'password': os.environ.get("MAPROULETTE_API_PASSWORD")}

@@ -1,1 +1,1 @@
-geojson
+requests>=2.7.0
