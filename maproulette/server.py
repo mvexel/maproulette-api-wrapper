@@ -18,7 +18,7 @@ class MapRouletteServer(object):
             user=foo,
             password=bar)
 
-    :param url: The URL for the MapRoulette API server you want to use. If omitted, a local development server at http://localhost:5000 is assumed.
+    :param url: The URL for the MapRoulette API server you want to use. Example: `http://dev.maproulette.org/api`
     :type url: String
     :param user: Your username for this MapRoulette server's API
     :param password: Your password for this MapRoulette server's API
