@@ -79,8 +79,8 @@ class APITests(unittest.TestCase):
             self.test_challenge_slug)
         task = MapRouletteTask(
             challenge=challenge,
-            identifier=self.test_task_identifier,
-            geometries=self.__random_point())
+            identifier=self.test_task_identifier)
+        print task
         self.assertTrue(task.exists(self.server))
 
     def test_008_create_a_ton_of_tasks(self):

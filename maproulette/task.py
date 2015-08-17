@@ -65,7 +65,7 @@ class MapRouletteTask(object):
     def exists(self, server):
         """Check if a task exists on the server"""
         try:
-            response = server.get(
+            server.get(
                 'task',
                 replacements={
                     'slug': self.__challenge__.slug,

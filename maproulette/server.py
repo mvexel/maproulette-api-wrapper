@@ -34,13 +34,12 @@ class MapRouletteServer(object):
         'challenge_admin': '/admin/challenge/{slug}',
         'tasks_admin': '/admin/challenge/{slug}/tasks'
     }
-    LOCAL_TEST_SERVER_ENDPOINT = 'http://localhost:5000/api'
 
     base_url = ''
     user = ''
     password = ''
 
-    def __init__(self, user, password, url=LOCAL_TEST_SERVER_ENDPOINT):
+    def __init__(self, user, password, url):
         self.base_url = url
         self.user = user
         self.password = password
