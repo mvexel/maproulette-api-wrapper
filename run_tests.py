@@ -19,7 +19,7 @@ class APITests(unittest.TestCase):
     A_TON = 10000
     test_challenge_slug = 'test-{}'.format(uuid.uuid4())
     test_task_identifier = 'task-{}'.format(uuid.uuid4())
-    test_server_url = 'http://dev.maproulette.org/api'
+    test_server_url = 'http://localhost:5000/api'
     #    test_server_url = 'http://localhost:5000/api'
     test_credentials = {
         'user': os.environ.get("MAPROULETTE_API_USER"),
