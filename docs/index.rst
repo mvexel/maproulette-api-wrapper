@@ -85,22 +85,22 @@ MapRoulette Server
 ==================
 
 .. automodule:: maproulette.server
-:members:
+    :members:
 
 MapRoulette Challenge
 =====================
 
 .. automodule:: maproulette.challenge
-:members:
+    :members:
 
 MapRoulette Task
 ================
 
 .. automodule:: maproulette.task
-:members:
+    :members:
 
 A Task Collection
 =================
 
 .. automodule:: maproulette.taskcollection
-:members:
+    :members:
