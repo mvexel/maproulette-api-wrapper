@@ -11,6 +11,7 @@ with the corresponding challenge on the server.
 
 from .challenge import MapRouletteChallenge
 from .task import MapRouletteTask
+from past.builtins import xrange
 
 
 class MapRouletteTaskCollection(object):
